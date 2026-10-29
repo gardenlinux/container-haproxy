@@ -13,6 +13,11 @@ on:
         description: 'Workflow file to trigger on new release'
         required: false
         default: 'build-haproxy-fips.yml'
+      stable_only:
+        description: 'Only consider stable releases (vX.Y.Z); set to false to include dev/rc tags'
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   actions: write
@@ -20,6 +25,7 @@ permissions:
 env:
   UPSTREAM_REPO: ${{ inputs.upstream_repo || 'haproxy/haproxy' }}
   BUILD_WORKFLOW: ${{ inputs.build_workflow || 'build-haproxy-fips.yml' }}
+  STABLE_ONLY: ${{ inputs.stable_only != 'false' }}
 
 jobs:
   check-and-trigger:
@@ -32,7 +38,11 @@ jobs:
         run: |
           latest=$(gh release view --repo "${UPSTREAM_REPO}" --json tagName -q '.tagName | ltrimstr("v")' 2>/dev/null || true)
           if [ -z "${latest}" ]; then
-            latest=$(gh api repos/${UPSTREAM_REPO}/tags --jq '[.[].name | select(test("^v[0-9]+\\.[0-9]+\\.[0-9]+$"))] | .[0] | ltrimstr("v")')
+            if [ "${STABLE_ONLY}" = "true" ]; then
+              latest=$(gh api repos/${UPSTREAM_REPO}/tags --jq '[.[].name | select(test("^v[0-9]+\\.[0-9]+\\.[0-9]+$"))] | .[0] | ltrimstr("v")')
+            else
+              latest=$(gh api repos/${UPSTREAM_REPO}/tags --jq '.[0].name | ltrimstr("v")')
+            fi
           fi
           echo "version=${latest}" >> "$GITHUB_OUTPUT"
 
