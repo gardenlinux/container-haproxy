@@ -30,9 +30,9 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          latest=$(gh release view --repo "${UPSTREAM_REPO}" --json tagName -q '.tagName | ltrimstr("v")' 2>/dev/null)
+          latest=$(gh release view --repo "${UPSTREAM_REPO}" --json tagName -q '.tagName | ltrimstr("v")' 2>/dev/null || true)
           if [ -z "${latest}" ]; then
-            latest=$(gh api repos/${UPSTREAM_REPO}/tags --jq '.[0].name | ltrimstr("v")')
+            latest=$(gh api repos/${UPSTREAM_REPO}/tags --jq '[.[].name | select(test("^v[0-9]+\\.[0-9]+\\.[0-9]+$"))] | .[0] | ltrimstr("v")')
           fi
           echo "version=${latest}" >> "$GITHUB_OUTPUT"
 
