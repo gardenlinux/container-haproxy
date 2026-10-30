@@ -8,7 +8,7 @@ BASE_IMAGE="${BASE_IMAGE:-ghcr.io/gardenlinux/gardenlinux/fips:1877.22}"
 WORKDIR="${WORKDIR:-.build/haproxy-fips-build}"
 IMAGE_NAME="${IMAGE_NAME:-gl-fips-haproxy}"
 ARCH="${ARCH:-$(uname -m | sed 's/x86_64/amd64/;s/aarch64/arm64/')}"
-VERSION="${VERSION:-3.4.0}"
+VERSION="${VERSION:-3.5-dev10}"
 UPSTREAM_GIT_SHA="${UPSTREAM_GIT_SHA:-64a335366dc1bb5431e28a75e3a22e4226ac9b8f}"
 
 # --- prerequisites -----------------------------------------------------------
