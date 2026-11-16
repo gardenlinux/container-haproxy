@@ -220,6 +220,8 @@ jobs:
             echo ""
             echo "### SBOMs"
             echo '```'
+            echo "curl -LO https://github.com/${{ github.repository }}/releases/download/v${VERSION}/gl-fips-haproxy-${VERSION}-amd64.cdx.json"
+            echo "curl -LO https://github.com/${{ github.repository }}/releases/download/v${VERSION}/gl-fips-haproxy-${VERSION}-arm64.cdx.json"
             echo "gh attestation verify gl-fips-haproxy-${VERSION}-amd64.cdx.json --repo ${{ github.repository }}"
             echo "gh attestation verify gl-fips-haproxy-${VERSION}-arm64.cdx.json --repo ${{ github.repository }}"
             echo '```'
